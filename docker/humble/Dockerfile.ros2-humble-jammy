@@ -1,0 +1,75 @@
+# This is an auto generated Dockerfile for ros:desktop
+# generated from docker_images_ros2/create_ros_image.Dockerfile.em
+FROM ros:humble-ros-base
+
+# setup environment
+ENV LANG C.UTF-8
+ENV LC_ALL C.UTF-8
+
+ARG DEBIAN_FRONTEND=noninteractive
+# install required packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+	net-tools \
+	zip unzip \
+	build-essential \
+	vim \
+        git \
+	apt-utils \
+	tzdata \
+	dirmngr \
+	gnupg2 \
+	python3-pip \
+	python3-rosdep \
+	python3-rosinstall-generator \
+	python3-vcstools \
+	python3-vcstool \
+	python3-transforms3d \
+	ros-humble-pcl-ros \
+        ros-humble-pcl-msgs \
+        ros-humble-pcl-conversions \
+        ros-humble-nav2* \
+        ros-humble-navigation2 \
+        ros-humble-image-proc \
+        ros-humble-rmw-cyclonedds-cpp \
+        ros-humble-robot-localization \
+        ros-humble-teleop-twist-keyboard \
+	ros-humble-rqt* \
+	ros-humble-rviz2 \
+	ros-humble-robot-state-publisher \
+	ros-humble-joint-state-publisher \
+	&& rm -rf /var/lib/apt/lists/* \
+	&& apt-get update
+
+ARG CUR_UID
+RUN groupadd -r analog \
+	&& useradd -rm -d /home/analog -s /bin/bash -p "$(openssl passwd -1 analog)" -g root -g analog -G sudo -u $CUR_UID analog \
+	&& chown -R analog:analog /home/analog
+
+COPY misc /home/analog/misc
+RUN chown -R analog:analog /home/analog/misc
+USER analog
+SHELL ["/bin/bash", "-c"]
+
+RUN pip install xacro
+RUN echo "export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp" >> ~/.bashrc
+RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
+RUN echo "analog" | sudo -ES rm -rf /etc/ros/rosdep/sources.list.d/20-default.list && \
+	echo "analog" | sudo -ES rosdep init && \
+	rosdep update
+
+RUN mkdir -p /home/analog/ros1_utils && \
+	chmod +x /home/analog/misc/ros1_utils/build_ros1_utils.sh && \
+	ROS2_PATH=/opt/ros/humble PARALLEL_WORKERS=32 /home/analog/misc/ros1_utils/build_ros1_utils.sh /home/analog/ros1_utils
+
+RUN mkdir -p /home/analog/rtabmap_ws && \
+	chmod +x /home/analog/misc/rtabmap/build_and_install_rtabmap_ws.sh && \
+	PARALLEL_WORKERS=32 /home/analog/misc/rtabmap/build_and_install_rtabmap_ws.sh /home/analog/rtabmap_ws
+
+RUN mkdir -p /home/analog/imu_tools_ws/src && \
+	cd /home/analog/imu_tools_ws && \
+	git clone https://github.com/CCNYRoboticsLab/imu_tools.git -b humble src/imu_tools && \
+        source /opt/ros/$ROS_DISTRO/setup.bash && \
+        echo "analog" | sudo -ES rosdep install --from-paths ./src --ignore-packages-from-source -y && \
+	colcon build --symlink-install --cmake-force-configure --parallel-workers 32
+	
+WORKDIR /home/analog

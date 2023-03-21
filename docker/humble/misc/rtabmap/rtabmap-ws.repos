@@ -1,0 +1,11 @@
+- git:
+    local-name: rtabmap
+    type: git
+    uri: https://github.com/introlab/rtabmap.git
+    version: humble-devel
+
+- git:
+    local-name: rtabmap_ros
+    type: git
+    uri: https://github.com/introlab/rtabmap_ros.git
+    version: humble-devel
