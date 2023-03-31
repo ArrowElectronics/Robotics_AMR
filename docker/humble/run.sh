@@ -14,4 +14,4 @@ docker run \
 	-v $(pwd)/adi-dev:/home/analog/adi-dev:rw \
 	-u $(id -u) \
 	--name ros2-humble-jammy \
-	ros2-humble-jammy:latest
+	ros2-humble-jammy:release
