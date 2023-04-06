@@ -15,7 +15,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 def generate_launch_description():
 
     ekf_config = os.path.join(
-        get_package_share_directory("eic_sensor_fusion"))
+        get_package_share_directory("eic_adi_sensor_fusion"))
     
     ekf_node = launch_ros.actions.Node(
         package='robot_localization',
@@ -26,7 +26,7 @@ def generate_launch_description():
     )
 
     imu_filter_config = os.path.join(
-        get_package_share_directory('eic_sensor_fusion'))
+        get_package_share_directory('eic_adi_sensor_fusion'))
     imu_filter_node = launch_ros.actions.Node(
         package='imu_filter_madgwick',
         executable='imu_filter_madgwick_node',

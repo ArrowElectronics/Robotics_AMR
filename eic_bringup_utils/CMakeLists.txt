@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8)
+cake_minimum_required(VERSION 3.8)
 project(eic_bringup_utils)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -24,8 +24,6 @@ endif()
 install(DIRECTORY
   launch
   config
-  src
-  include
   rviz
   DESTINATION share/${PROJECT_NAME}
 )
