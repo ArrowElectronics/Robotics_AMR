@@ -1,3 +1,3 @@
 # Robotics_AMR
 
-Please refer AMR_UserManual_v1.0.docx to start working with ToF based navigation on AMR.
+Please refer [WIKI](https://github.com/ArrowElectronics/Robotics_AMR/wiki/) to start working with ToF based navigation on AMR.
