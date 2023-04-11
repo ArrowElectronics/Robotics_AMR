@@ -59,18 +59,18 @@ RUN echo "analog" | sudo -ES rm -rf /etc/ros/rosdep/sources.list.d/20-default.li
 
 RUN mkdir -p /home/analog/ros1_utils && \
 	chmod +x /home/analog/misc/ros1_utils/build_ros1_utils.sh && \
-	ROS2_PATH=/opt/ros/humble PARALLEL_WORKERS=32 /home/analog/misc/ros1_utils/build_ros1_utils.sh /home/analog/ros1_utils
+	ROS2_PATH=/opt/ros/humble /home/analog/misc/ros1_utils/build_ros1_utils.sh /home/analog/ros1_utils
 
 RUN mkdir -p /home/analog/rtabmap_ws && \
 	chmod +x /home/analog/misc/rtabmap/build_and_install_rtabmap_ws.sh && \
-	PARALLEL_WORKERS=32 /home/analog/misc/rtabmap/build_and_install_rtabmap_ws.sh /home/analog/rtabmap_ws
+	/home/analog/misc/rtabmap/build_and_install_rtabmap_ws.sh /home/analog/rtabmap_ws
 
 RUN mkdir -p /home/analog/imu_tools_ws/src && \
 	cd /home/analog/imu_tools_ws && \
 	git clone https://github.com/CCNYRoboticsLab/imu_tools.git -b humble src/imu_tools && \
         source /opt/ros/$ROS_DISTRO/setup.bash && \
         echo "analog" | sudo -ES rosdep install --from-paths ./src --ignore-packages-from-source -y && \
-	colcon build --symlink-install --cmake-force-configure --parallel-workers 32
+	colcon build --symlink-install --cmake-force-configure
 
 RUN mkdir -p /home/analog/ros2_ws/src
 COPY --chown=analog:analog eic_bringup_utils /home/analog/ros2_ws/src/eic_bringup_utils
@@ -80,6 +80,6 @@ COPY --chown=analog:analog imu_driver /home/analog/ros2_ws/src/imu_driver
 RUN cd /home/analog/ros2_ws && \
     source /opt/ros/$ROS_DISTRO/setup.bash && \
     echo "analog" | sudo -ES rosdep install --from-paths ./src --ignore-packages-from-source -y && \
-    colcon build   --cmake-force-configure --parallel-workers 32
+    colcon build   --cmake-force-configure
 
 WORKDIR /home/analog
