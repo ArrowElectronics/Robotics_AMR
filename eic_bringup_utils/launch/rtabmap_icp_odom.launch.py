@@ -23,22 +23,10 @@ from launch.conditions import LaunchConfigurationNotEquals
 
 
 def generate_launch_description():
-    use_sim_time = LaunchConfiguration('use_sim_time')
     qos = LaunchConfiguration('qos')
     
     nav2_bringup_launch_dir = os.path.join(
         get_package_share_directory('nav2_bringup'), 'launch')
-
-    lifecycle_nodes = ['map_server']
-
-    lifecycle_node = Node(
-                package='nav2_lifecycle_manager', executable='lifecycle_manager',
-                name='lifecycle_manager_map', output='screen',
-                parameters=[{'autostart': True},
-                            {'node_names': lifecycle_nodes}],
-                
-    )
-
 
     icp_odometry_node = Node(
             package='rtabmap_ros', executable='icp_odometry', output='screen',
@@ -159,7 +147,6 @@ def generate_launch_description():
             'map_always_update': False,
             'gen_depth_fill_holes_size': 200,  
           }],
-        #remappings=remappings
         remappings=[
             ('scan_cloud', '/cloud'),
             ('odom', '/odom'),
@@ -185,14 +172,6 @@ def generate_launch_description():
         ]
     )
 
-        # Compute quaternion of the IMU
-    imu_madgwick_node = Node(
-            package='imu_filter_madgwick', executable='imu_filter_madgwick_node', output='screen',
-            parameters=[{'use_mag': False, 
-                         'world_frame':'enu', 
-                         'publish_tf':False}],
-            remappings=[('imu/data_raw', '/imu')]
-    )
 
     base_link_tf_node = Node(
             package='tf2_ros', executable='static_transform_publisher', output='screen',
@@ -200,24 +179,13 @@ def generate_launch_description():
 
     )
 
-    #Navigation
-    nav2_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(nav2_bringup_launch_dir, 'navigation_launch.py')),
-        #launch_arguments={'params_file': /home/admin/data/ros2_ws/src/eic_bringup_utils/config/nav2_params_RPP.yaml}
-        launch_arguments={'params_file': os.path.join(
-            get_package_share_directory(
-                'eic_bringup_utils'), 'config', 'nav2_params_RPP.yaml')}.items()        
-    )
 
     return LaunchDescription([
         # Nodes to launch
         DeclareLaunchArgument('qos', default_value='2',description='QoS used for input sensor topics'),
         rtabmap_node,
         rtabmap_viz_node,
-        #imu_madgwick_node,
         pointcloud_xyz_node,
-        #nav2_launch,
         icp_odometry_node,
 	base_link_tf_node,
 

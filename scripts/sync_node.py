@@ -8,7 +8,7 @@ from sensor_msgs.msg import Image
 import time
 
 
-class Image_SyncNode(Node):
+class image_syncnode(Node):
 
     def __init__(self):
 
@@ -32,9 +32,6 @@ class Image_SyncNode(Node):
         self.pub_irimage = self.create_publisher(Image,
                 '/cam1/ir_image_sync', 10)
 
-        # timer_period = 0.5  # seconds
-        # self.timer = self.create_timer(timer_period, self.timer_pubcallback)
-        # self.i = 0
 
     def caminfo_callback(self, msg):
         msg.header.stamp = self.get_clock().now().to_msg()
@@ -55,7 +52,7 @@ class Image_SyncNode(Node):
 def main(args=None):
 
     rclpy.init(args=args)
-    image_sync_node = Image_SyncNode()
+    image_sync_node = image_syncnode()
     rclpy.spin(image_sync_node)
 
     # Destroy the node explicitly
