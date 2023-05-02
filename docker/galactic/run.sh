@@ -14,4 +14,4 @@ docker run \
 	-v $(pwd)/adi-dev:/home/admin/adi-dev:rw \
 	-u $(id -u) \
 	--name ros2-galactic-focal \
-	ros2-galactic-focal:release
+	ros2-galactic-focal:latest
