@@ -1,0 +1,6 @@
+projectKey=eI.robotics-amr-adi
+serverUrl=http://sonarqube.einfochips.com
+serverVersion=9.2.4.50792
+dashboardUrl=http://sonarqube.einfochips.com/dashboard?id=eI.robotics-amr-adi
+ceTaskId=AYfb4Jt3IHWHTahTGJIu
+ceTaskUrl=http://sonarqube.einfochips.com/api/ce/task?id=AYfb4Jt3IHWHTahTGJIu
