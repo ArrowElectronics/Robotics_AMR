@@ -1,0 +1,67 @@
+# This is an auto generated Dockerfile for ros:desktop
+# generated from docker_images_ros2/create_ros_image.Dockerfile.em
+FROM ros:galactic-ros-base
+
+# setup environment
+ENV LANG C.UTF-8
+ENV LC_ALL C.UTF-8
+
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+RUN echo "deb http://packages.ros.org/ros/ubuntu focal main" > /etc/apt/sources.list.d/ros1-latest.list
+
+ARG DEBIAN_FRONTEND=noninteractive
+# install required packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+	net-tools \
+	openssh-server \
+	zip unzip \
+	build-essential \
+	vim \
+        git \
+	python3-pip \
+	apt-utils \
+	tzdata \
+	dirmngr \
+	gnupg2 \
+	ros-noetic-ros-base \
+	ros-noetic-catkin \
+	ros-noetic-roscpp \
+	ros-noetic-roslaunch \
+	ros-noetic-rosmsg \
+	ros-noetic-std-msgs \
+	ros-noetic-rosbash \
+	ros-noetic-rostopic \
+	ros-noetic-rqt-image-view \
+	ros-galactic-pcl-ros \
+        ros-galactic-pcl-msgs \
+        ros-galactic-pcl-conversions \
+        ros-galactic-nav2* \
+        ros-galactic-navigation2 \
+        ros-galactic-image-proc \
+	&& rm -rf /var/lib/apt/lists/* \
+	&& apt-get update
+
+
+ARG CUR_UID
+RUN groupadd -r admin \
+	&& useradd -rm -d /home/admin -s /bin/bash -p "$(openssl passwd -1 Tof@4321)" -g root -g admin -G sudo -u $CUR_UID admin \
+	&& chown -R admin:admin /home/admin
+
+USER admin
+SHELL ["/bin/bash", "-c"]
+RUN echo "export ROS1_INSTALL_PATH=/opt/ros/noetic" >> ~/.bashrc
+RUN echo "export ROS2_INSTALL_PATH=/opt/ros/galactic" >> ~/.bashrc
+
+RUN mkdir -p /home/admin/Workspaces
+WORKDIR /home/admin/Workspaces
+
+RUN mkdir -p /home/admin/Workspaces/ros1_bridge/src && \
+	cd /home/admin/Workspaces/ros1_bridge/src && \
+	git clone -b galactic https://github.com/ros2/ros1_bridge.git && \
+	cd /home/admin/Workspaces/ros1_bridge && \
+	unset ROS_DISTRO && \
+	source /opt/ros/noetic/setup.bash && \
+	source /opt/ros/galactic/setup.bash && \
+	colcon build --symlink-install --packages-select ros1_bridge --cmake-force-configure
+
+RUN echo "export ROS_MASTER_URI=http://10.42.0.1:11311" >> ~/.bashrc

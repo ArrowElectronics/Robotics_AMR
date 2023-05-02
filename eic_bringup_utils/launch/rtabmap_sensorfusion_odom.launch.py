@@ -23,7 +23,6 @@ from launch.conditions import LaunchConfigurationNotEquals
 
 
 def generate_launch_description():
-    use_sim_time = LaunchConfiguration('use_sim_time')
     qos = LaunchConfiguration('qos')
     
     nav2_bringup_launch_dir = os.path.join(
@@ -31,43 +30,6 @@ def generate_launch_description():
 
     lifecycle_nodes = ['map_server']
 
-    lifecycle_node = Node(
-                package='nav2_lifecycle_manager', executable='lifecycle_manager',
-                name='lifecycle_manager_map', output='screen',
-                parameters=[{'autostart': True},
-                            {'node_names': lifecycle_nodes}],
-                
-    )
-
-
-    icp_odometry_node = Node(
-            package='rtabmap_ros', executable='icp_odometry', output='screen',
-            parameters=[{
-              'frame_id':'base_link',
-              'subscribe_scan': False,
-              'subscribe_scan_cloud': True,
-              'qos':qos,
-            }],
-            remappings=[  
-              ('scan_cloud', '/cloud')
-            ],
-            arguments=[
-              'Icp/PointToPlane', 'true',
-              'Icp/Iterations', '10',
-              'Icp/VoxelSize', '0.1',
-              'Icp/Epsilon', '0.001',
-              'Icp/PointToPlaneK', '20',
-              'Icp/PointToPlaneRadius', '0',
-              'Icp/MaxTranslation', '2',
-              'Icp/MaxCorrespondenceDistance', '1',
-              'Icp/Strategy', '1',
-              'Icp/OutlierRatio', '0.7',
-              'Icp/CorrespondenceRatio', '0.01',
-              'Odom/ScanKeyFrameThr', '0.6',
-              'OdomF2M/ScanSubtractRadius', '0.1',
-              'OdomF2M/ScanMaxSize', '15000',
-              'OdomF2M/BundleAdjustment', 'false',
-    ])
 
     rtabmap_node = Node(
         package='rtabmap_ros', executable='rtabmap', output='screen',
@@ -150,17 +112,6 @@ def generate_launch_description():
         arguments=['-d']
     )
 
-    rtabmap_viz_node = Node(
-        package='rtabmap_ros', executable='rtabmapviz', output='screen',
-        parameters=[{
-            'frame_id':'base_link',
-            'subscribe_depth': False,
-            'approx_sync': True,
-            'map_always_update': False,
-            'gen_depth_fill_holes_size': 200,  
-          }],
-        #remappings=remappings
-    )
 
     pointcloud_xyz_node = Node(
         package='rtabmap_ros', executable='point_cloud_xyz', output='screen',
@@ -181,16 +132,6 @@ def generate_launch_description():
         ]
     )
 
-        # Compute quaternion of the IMU
-    imu_madgwick_node = Node(
-            package='imu_filter_madgwick', executable='imu_filter_madgwick_node', output='screen',
-            parameters=[{'use_mag': False, 
-                         'world_frame':'enu', 
-                         'publish_tf':False}],
-            remappings=[('imu/data_raw', '/imu')]
-    )
-
-    #Navigation
     nav2_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(nav2_bringup_launch_dir, 'navigation_launch.py')),
@@ -207,10 +148,7 @@ def generate_launch_description():
         # Nodes to launch
         DeclareLaunchArgument('qos', default_value='2',description='QoS used for input sensor topics'),
         rtabmap_node,
-        #rtabmap_viz_node,
-        #imu_madgwick_node,
         pointcloud_xyz_node,
         nav2_launch,
-        #icp_odometry_node,
 
     ])
