@@ -1,7 +1,7 @@
 #!/bin/sh
-docker stop ros1-noetic-ros2-galactic > /dev/null
-docker rm -f ros1-noetic-ros2-galactic > /dev/null
-mkdir -p data
+docker stop ros2-galactic-focal > /dev/null
+docker rm -f ros2-galactic-focal > /dev/null
+mkdir -p adi-dev
 docker run \
 	--privileged \
 	-itd \
@@ -11,7 +11,7 @@ docker run \
 	-v /dev:/dev \
 	-v /tmp/.x11-unix:/tmp/.x11-unix \
 	-e DISPLAY \
-	-v $(pwd)/data:/home/admin/data:rw \
+	-v $(pwd)/adi-dev:/home/admin/adi-dev:rw \
 	-u $(id -u) \
-	--name ros1-noetic-ros2-galactic \
-	ros1-noetic-ros2-galactic:latest
+	--name ros2-galactic-focal \
+	ros2-galactic-focal:latest
