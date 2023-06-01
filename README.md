@@ -4,4 +4,4 @@ Please refer [WIKI](https://github.com/ArrowElectronics/Robotics_AMR/wiki/) to s
 
 # Terms of Sale
 
-please refer [link](https://uat.arrow.com/en/legal/terms-and-conditions-of-sale)
+Please refer to eInfochips’ Terms and Conditions of Sale found [here](https://uat.arrow.com/en/legal/terms-and-conditions-of-sale)
