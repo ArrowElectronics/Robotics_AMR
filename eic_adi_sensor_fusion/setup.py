@@ -16,10 +16,10 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='harshsingh',
-    maintainer_email='harshvardhan.singh@einfochips.com',
+    maintainer='Einfochips pvt ltd.',
+    maintainer_email='support@einfochips.com',
     description='Package contains launch file and configurations to run robot_localization package',
-    license='TODO: License declaration',
+    license='Apache2.0, BSD-3',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
