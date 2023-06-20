@@ -4,8 +4,9 @@
   <name>eic_adi_sensor_fusion</name>
   <version>0.0.0</version>
   <description>Package contains launch file and configurations to run robot_localization package</description>
-  <maintainer email="harshvardhan.singh@einfochips.com">harshsingh</maintainer>
-  <license>TODO: License declaration</license>
+  <maintainer email="support@einfochips.com">Einfochips pvt ltd</maintainer>
+  <license>Apache2.0</license>
+  <license>BSD-3</license>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
