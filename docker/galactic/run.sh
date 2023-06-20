@@ -1,6 +1,6 @@
 #!/bin/sh
-docker stop ros2-galactic-focal > /dev/null
-docker rm -f ros2-galactic-focal > /dev/null
+docker stop ros2-galactic-focal &> /dev/null
+docker rm -f ros2-galactic-focal &> /dev/null
 mkdir -p adi-dev
 docker run \
 	--privileged \
