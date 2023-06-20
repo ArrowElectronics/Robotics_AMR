@@ -1,6 +1,6 @@
 #!/bin/sh
-docker stop ros2-humble-jammy > /dev/null
-docker rm -f ros2-humble-jammy > /dev/null
+docker stop ros2-humble-jammy &> /dev/null
+docker rm -f ros2-humble-jammy &> /dev/null
 mkdir -p adi-dev
 docker run \
 	--privileged \
