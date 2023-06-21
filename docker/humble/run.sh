@@ -8,6 +8,7 @@ docker run \
 	--init \
 	--rm \
 	--network host \
+	--hostname humble \
 	-v /dev:/dev \
 	-v /tmp/.x11-unix:/tmp/.x11-unix \
 	-e DISPLAY \

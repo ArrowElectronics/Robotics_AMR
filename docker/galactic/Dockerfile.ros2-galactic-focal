@@ -44,62 +44,50 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	ros-galactic-teleop-twist-keyboard \
 	ros-galactic-rqt* \
 	ros-galactic-rviz2 \
+	ros-galactic-ros1-bridge \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& apt-get update
 
 
 ARG CUR_UID
-RUN groupadd -r admin \
-	&& useradd -rm -d /home/admin -s /bin/bash -p "$(openssl passwd -1 admin)" -g root -g admin -G sudo -u $CUR_UID admin \
-	&& chown -R admin:admin /home/admin
 
-COPY misc /home/admin/misc
-RUN chown -R admin:admin /home/admin/misc
-COPY scripts /home/admin/scripts
-RUN chown -R admin:admin /home/admin/scripts
-COPY adi-dev /home/admin/adi-dev
-RUN chown -R admin:admin /home/admin/adi-dev
-USER admin
+RUN groupadd -r analog \
+	&& useradd -rm -d /home/analog -s /bin/bash -p "$(openssl passwd -1 analog)" -g root -g analog -G sudo -u $CUR_UID analog \
+	&& chown -R analog:analog /home/analog
+
+COPY  --chown=analog:analog misc /home/analog/misc
+COPY  --chown=analog:analog scripts /home/analog/scripts
+USER analog
 SHELL ["/bin/bash", "-c"]
 RUN echo "export ROS1_INSTALL_PATH=/opt/ros/noetic" >> ~/.bashrc
 RUN echo "export ROS2_INSTALL_PATH=/opt/ros/galactic" >> ~/.bashrc
 RUN pip install xacro
-RUN echo "admin" | sudo -ES rm -rf /etc/ros/rosdep/sources.list.d/20-default.list && \
-	echo "admin" | sudo -ES rosdep init && \
+RUN echo "analog" | sudo -ES rm -rf /etc/ros/rosdep/sources.list.d/20-default.list && \
+	echo "analog" | sudo -ES rosdep init && \
 	rosdep update
 
-RUN mkdir -p /home/admin/ros1_utils/ros1_bridge_ws/src && \
-	cd /home/admin/ros1_utils/ros1_bridge_ws/src && \
-	git clone -b galactic https://github.com/ros2/ros1_bridge.git && \
-	cd /home/admin/ros1_utils/ros1_bridge_ws/ && \
-	unset ROS_DISTRO && \
-	source /opt/ros/noetic/setup.bash && \
-	source /opt/ros/galactic/setup.bash && \
-	colcon build --symlink-install --packages-select ros1_bridge --cmake-force-configure
+RUN mkdir -p /home/analog/rtabmap_ws && \
+	echo "analog" | sudo -ES rosdep update --include-eol-distros && \
+	chmod +x /home/analog/misc/rtabmap/build_and_install_rtabmap_ws.sh && \
+	/home/analog/misc/rtabmap/build_and_install_rtabmap_ws.sh /home/analog/rtabmap_ws
 
-RUN mkdir -p /home/admin/rtabmap_ws && \
-	rosdep update --include-eol-distros && \
-	chmod +x /home/admin/misc/rtabmap/build_and_install_rtabmap_ws.sh && \
-	/home/admin/misc/rtabmap/build_and_install_rtabmap_ws.sh /home/admin/rtabmap_ws
-
-RUN mkdir -p /home/admin/imu_tools_ws/src && \
-	cd /home/admin/imu_tools_ws && \
+RUN mkdir -p /home/analog/imu_tools_ws/src && \
+	cd /home/analog/imu_tools_ws && \
 	git clone https://github.com/CCNYRoboticsLab/imu_tools.git -b galactic src/imu_tools && \
         source /opt/ros/$ROS_DISTRO/setup.bash && \
-        echo "admin" | sudo -ES rosdep install --from-paths ./src --ignore-packages-from-source -y && \
+        echo "analog" | sudo -ES rosdep install --from-paths ./src --ignore-packages-from-source -y && \
 	colcon build --symlink-install --cmake-force-configure
 
 
-RUN mkdir -p /home/admin/ros2_ws/src
-COPY --chown=admin:admin eic_bringup_utils /home/admin/ros2_ws/src/eic_bringup_utils
-COPY --chown=admin:admin eic_adi_sensor_fusion /home/admin/ros2_ws/src/eic_adi_sensor_fusion
-COPY --chown=admin:admin imu_driver /home/admin/ros2_ws/src/imu_driver
+RUN mkdir -p /home/analog/ros2_ws/src
+COPY --chown=analog:analog eic_bringup_utils /home/analog/ros2_ws/src/eic_bringup_utils
+COPY --chown=analog:analog eic_adi_sensor_fusion /home/analog/ros2_ws/src/eic_adi_sensor_fusion
+COPY --chown=analog:analog imu_driver /home/analog/ros2_ws/src/imu_driver
 
-RUN cd /home/admin/ros2_ws && \
+RUN cd /home/analog/ros2_ws && \
     source /opt/ros/$ROS_DISTRO/setup.bash && \
-    echo "admin" | sudo -ES rosdep install --from-paths ./src --ignore-packages-from-source -y && \
+    echo "analog" | sudo -ES rosdep install --from-paths ./src --ignore-packages-from-source -y && \
     colcon build   --cmake-force-configure
 
 RUN echo "export ROS_MASTER_URI=http://10.42.0.1:11311" >> ~/.bashrc
-
-WORKDIR /home/admin/
+WORKDIR /home/analog/
