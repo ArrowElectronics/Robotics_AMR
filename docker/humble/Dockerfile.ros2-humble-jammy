@@ -43,8 +43,8 @@ RUN groupadd -r analog \
 	&& useradd -rm -d /home/analog -s /bin/bash -p "$(openssl passwd -1 analog)" -g root -g analog -G sudo -u $CUR_UID analog \
 	&& chown -R analog:analog /home/analog
 
-COPY misc /home/analog/misc
-RUN chown -R analog:analog /home/analog/misc
+COPY --chown=analog:analog misc /home/analog/misc
+COPY --chown=analog:analog scripts /home/analog/scripts
 USER analog
 SHELL ["/bin/bash", "-c"]
 
