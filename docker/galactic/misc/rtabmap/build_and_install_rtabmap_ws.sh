@@ -40,7 +40,7 @@ main()
 		print_usage $0
 	fi
 	
-	SUDO_PASSWD="${SUDO_PASSWD:-admin}"
+	SUDO_PASSWD="${SUDO_PASSWD:-analog}"
 	PARALLEL_WORKERS="${PARALLEL_WORKERS:-`nproc`}"
 	echo "Installing to Path: $1 with parallel workers ${PARALLEL_WORKERS}"
 
