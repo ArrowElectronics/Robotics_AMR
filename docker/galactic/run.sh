@@ -8,11 +8,10 @@ docker run \
 	--init \
 	--rm \
 	--network host \
-	--hostname galactic \
 	-v /dev:/dev \
 	-v /tmp/.x11-unix:/tmp/.x11-unix \
 	-e DISPLAY \
-	-v $(pwd)/adi-dev:/home/analog/adi-dev:rw \
+	-v $(pwd)/adi-dev:/home/analog-galactic/adi-dev:rw \
 	-u $(id -u) \
 	--name ros2-galactic-focal \
 	ros2-galactic-focal:release

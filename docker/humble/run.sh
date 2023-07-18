@@ -8,11 +8,10 @@ docker run \
 	--init \
 	--rm \
 	--network host \
-	--hostname humble \
 	-v /dev:/dev \
 	-v /tmp/.x11-unix:/tmp/.x11-unix \
 	-e DISPLAY \
-	-v $(pwd)/adi-dev:/home/analog/adi-dev:rw \
+	-v $(pwd)/adi-dev:/home/analog-humble/adi-dev:rw \
 	-u $(id -u) \
 	--name ros2-humble-jammy \
 	ros2-humble-jammy:release

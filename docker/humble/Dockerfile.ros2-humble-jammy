@@ -39,13 +39,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	&& apt-get update
 
 ARG CUR_UID
-RUN groupadd -r analog \
-	&& useradd -rm -d /home/analog -s /bin/bash -p "$(openssl passwd -1 analog)" -g root -g analog -G sudo -u $CUR_UID analog \
-	&& chown -R analog:analog /home/analog
+RUN groupadd -r analog-humble \
+	&& useradd -rm -d /home/analog-humble -s /bin/bash -p "$(openssl passwd -1 analog-humble)" -g root -g analog-humble -G sudo -u $CUR_UID analog-humble \
+	&& chown -R analog-humble:analog-humble /home/analog-humble
 
-COPY --chown=analog:analog misc /home/analog/misc
-COPY --chown=analog:analog scripts /home/analog/scripts
-USER analog
+COPY --chown=analog-humble:analog-humble misc /home/analog-humble/misc
+COPY --chown=analog-humble:analog-humble scripts /home/analog-humble/scripts
+USER analog-humble
 SHELL ["/bin/bash", "-c"]
 
 RUN pip install xacro
@@ -55,30 +55,30 @@ RUN echo "analog" | sudo -ES rm -rf /etc/ros/rosdep/sources.list.d/20-default.li
 	echo "analog" | sudo -ES rosdep init && \
 	rosdep update
 
-RUN mkdir -p /home/analog/ros1_utils && \
-	chmod +x /home/analog/misc/ros1_utils/build_ros1_utils.sh && \
-	ROS2_PATH=/opt/ros/humble /home/analog/misc/ros1_utils/build_ros1_utils.sh /home/analog/ros1_utils
+RUN mkdir -p /home/analog-humble/ros1_utils && \
+	chmod +x /home/analog-humble/misc/ros1_utils/build_ros1_utils.sh && \
+	ROS2_PATH=/opt/ros/humble /home/analog-humble/misc/ros1_utils/build_ros1_utils.sh /home/analog-humble/ros1_utils
 
-RUN mkdir -p /home/analog/rtabmap_ws && \
-	chmod +x /home/analog/misc/rtabmap/build_and_install_rtabmap_ws.sh && \
-	/home/analog/misc/rtabmap/build_and_install_rtabmap_ws.sh /home/analog/rtabmap_ws
+RUN mkdir -p /home/analog-humble/rtabmap_ws && \
+	chmod +x /home/analog-humble/misc/rtabmap/build_and_install_rtabmap_ws.sh && \
+	/home/analog-humble/misc/rtabmap/build_and_install_rtabmap_ws.sh /home/analog-humble/rtabmap_ws
 
-RUN mkdir -p /home/analog/imu_tools_ws/src && \
-	cd /home/analog/imu_tools_ws && \
+RUN mkdir -p /home/analog-humble/imu_tools_ws/src && \
+	cd /home/analog-humble/imu_tools_ws && \
 	git clone https://github.com/CCNYRoboticsLab/imu_tools.git -b humble src/imu_tools && \
         source /opt/ros/$ROS_DISTRO/setup.bash && \
         echo "analog" | sudo -ES rosdep install --from-paths ./src --ignore-packages-from-source -y && \
 	colcon build --symlink-install --cmake-force-configure
 
-RUN mkdir -p /home/analog/ros2_ws/src
-COPY --chown=analog:analog eic_bringup_utils /home/analog/ros2_ws/src/eic_bringup_utils
-COPY --chown=analog:analog eic_adi_sensor_fusion /home/analog/ros2_ws/src/eic_adi_sensor_fusion
-COPY --chown=analog:analog imu_driver /home/analog/ros2_ws/src/imu_driver
+RUN mkdir -p /home/analog-humble/ros2_ws/src
+COPY --chown=analog-humble:analog-humble eic_bringup_utils /home/analog-humble/ros2_ws/src/eic_bringup_utils
+COPY --chown=analog-humble:analog-humble eic_adi_sensor_fusion /home/analog-humble/ros2_ws/src/eic_adi_sensor_fusion
+COPY --chown=analog-humble:analog-humble imu_driver /home/analog-humble/ros2_ws/src/imu_driver
 
-RUN cd /home/analog/ros2_ws && \
+RUN cd /home/analog-humble/ros2_ws && \
     source /opt/ros/$ROS_DISTRO/setup.bash && \
     echo "analog" | sudo -ES rosdep install --from-paths ./src --ignore-packages-from-source -y && \
     colcon build   --cmake-force-configure
 
 RUN echo "export ROS_MASTER_URI=http://10.42.0.1:11311" >> ~/.bashrc
-WORKDIR /home/analog
+WORKDIR /home/analog-humble
