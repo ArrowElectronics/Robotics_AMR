@@ -40,7 +40,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 ARG CUR_UID
 RUN groupadd -r analog-humble \
-	&& useradd -rm -d /home/analog-humble -s /bin/bash -p "$(openssl passwd -1 analog-humble)" -g root -g analog-humble -G sudo -u $CUR_UID analog-humble \
+	&& useradd -rm -d /home/analog-humble -s /bin/bash -p "$(openssl passwd -1 analog)" -g root -g analog-humble -G sudo -u $CUR_UID analog-humble \
 	&& chown -R analog-humble:analog-humble /home/analog-humble
 
 COPY --chown=analog-humble:analog-humble misc /home/analog-humble/misc
