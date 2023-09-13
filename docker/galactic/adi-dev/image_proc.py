@@ -75,7 +75,7 @@ def generate_launch_description():
             # Remap subscribers and publishers
             remappings=[
                 ('image', '/aditof_roscpp/aditof_ir'),
-                ('camera_info', '/aditof_roscpp/aditof_camera_info'),
+                ('camera_info', '/aditof_roscpp/camera_info'),
                 ('/image_rect', '/cam1/ir_image_rect')
             ],
         ),
@@ -94,7 +94,7 @@ def generate_launch_description():
             # Remap subscribers and publishers
             remappings=[
                 ('image', '/aditof_roscpp/aditof_depth'),
-                ('camera_info', '/aditof_roscpp/aditof_camera_info'),
+                ('camera_info', '/aditof_roscpp/camera_info'),
                 ('/image_rect', '/cam1/depth_image_rect')
             ],
         ),
