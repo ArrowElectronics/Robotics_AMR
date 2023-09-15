@@ -57,7 +57,7 @@ class image_syncnode(Node):
         super().__init__('image_sync_node')
 
         self.sub_caminfo = self.create_subscription(CameraInfo,
-                '/cam1/camera_info', self.caminfo_callback, 10)
+                '/aditof_roscpp/camera_info', self.caminfo_callback, 10)
         self.sub_caminfo  # prevent unused variable warning
         self.pub_caminfo = self.create_publisher(CameraInfo,
                 '/cam1/camera_info_sync', 10)
